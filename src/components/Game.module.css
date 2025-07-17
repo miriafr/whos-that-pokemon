@@ -11,10 +11,30 @@
   left: 0;
   position: fixed;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   overflow: hidden;
   box-sizing: border-box;
+}
+
+.title {
+  font-family: 'Pokemon', sans-serif;
+  color: #ffcb05;
+  text-align: center;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  margin-bottom: 0rem;
+  z-index: 20;
+  position: relative;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+  text-shadow:
+    -2px -2px 0 #2a75bb,
+    2px -2px 0 #2a75bb,
+    -2px 2px 0 #2a75bb,
+    2px 2px 0 #2a75bb,
+    3px 3px 3px black;
+  /* black shadow */
 }
 
 .bezelWrapper {
@@ -43,7 +63,7 @@
 .crtBox {
   position: relative;
   width: 88%;
-  height: 90%;
+  height: 91%;
   background: transparent;
   z-index: 1;
   display: flex;
@@ -175,8 +195,8 @@ input {
   font-size: clamp(1.5rem, 4vw, 3rem);
   border-radius: 8px;
   border: none;
-  width: 100%;
-  max-width: 80%;
+  width: 90%;
+  max-width: 70%;
   text-align: center;
   background: transparent;
   color: #ffcc00;
@@ -219,6 +239,8 @@ button {
   box-shadow:
     -4px 4px 0 #2a75bb,
     -6px 6px 0 rgba(0, 0, 0, 0.25);
+  text-shadow: 1px 1px 1px black;
+  ;
 }
 
 button:disabled {

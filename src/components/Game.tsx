@@ -82,36 +82,37 @@ export default function Game() {
 
     return (
         <div className={styles.gameContainer}>
-              <div className={styles.bezelWrapper}>
+            <h1 className={styles.title}>Who's That Pokémon?</h1>
+            <div className={styles.bezelWrapper}>
 
-            <div className={styles.crtBox}>
-                <div className={styles.battleZone}>
-                    <div className={styles.leftSide}>
-                        <img src="/assets/burst.png" className={styles.burst} alt="burst" />
-                        <img
-                            src={pokemon.sprite}
-                            alt="Who's that Pokémon?"
-                            className={`${styles.sprite} ${isRevealed ? styles.revealed : ''}`}
-                        />
-                    </div>
-                    <div className={styles.rightSide}>
-                        <input
-                            ref={inputRef}
-                            value={guess}
-                            onChange={(e) => setGuess(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                            placeholder="?"
-                            disabled={isRevealed}
-                        />
-                        <button onClick={isRevealed ? fetchRandomPokemon : handleSubmit} ref={nextButtonRef}>
-                            {isRevealed ? 'Next Pokémon' : 'Submit'}
-                        </button>
-                        <div className={styles.feedback}>
-                            {feedback && <p>{feedback}</p>}
+                <div className={styles.crtBox}>
+                    <div className={styles.battleZone}>
+                        <div className={styles.leftSide}>
+                            <img src="/assets/burst.png" className={styles.burst} alt="burst" />
+                            <img
+                                src={pokemon.sprite}
+                                alt="Who's that Pokémon?"
+                                className={`${styles.sprite} ${isRevealed ? styles.revealed : ''}`}
+                            />
+                        </div>
+                        <div className={styles.rightSide}>
+                            <input
+                                ref={inputRef}
+                                value={guess}
+                                onChange={(e) => setGuess(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                                placeholder="?"
+                                disabled={isRevealed}
+                            />
+                            <button onClick={isRevealed ? fetchRandomPokemon : handleSubmit} ref={nextButtonRef}>
+                                {isRevealed ? 'Next Pokémon' : 'Submit'}
+                            </button>
+                            <div className={styles.feedback}>
+                                {feedback && <p>{feedback}</p>}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
             </div>
         </div>
     );
