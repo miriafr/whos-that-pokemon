@@ -1,3 +1,7 @@
+* {
+  font-family: inherit;
+}
+
 .gameContainer {
   background: url('/assets/background.png') center/cover no-repeat;
   height: 100vh;
@@ -5,10 +9,32 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: 'Arial', sans-serif;
   overflow: hidden;
   padding: 2rem;
   box-sizing: border-box;
+  animation: bgPulse 1s infinite steps(1, end);
+}
+
+@keyframes bgPulse {
+  0% {
+    background-position: 0 0;
+  }
+
+  25% {
+    background-position: 1px 1px;
+  }
+
+  50% {
+    background-position: 0.5px 1.5px;
+  }
+
+  75% {
+    background-position: 1px 0.5px;
+  }
+
+  100% {
+    background-position: 0 0;
+  }
 }
 
 .battleZone {
@@ -31,18 +57,42 @@
 .burst {
   position: absolute;
   top: 50%;
-  left: 40%;
+  left: 50%;
   width: 220%;
   transform: translate(-50%, -50%);
   pointer-events: none;
   z-index: 0;
+  filter: drop-shadow(0 0 8px rgba(0, 153, 255, 0.6));
+  animation: burstJump 1s steps(1, end) infinite;
+}
+
+@keyframes burstJump {
+  0% {
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+
+  25% {
+    transform: translate(-50%, -50%) scale(1.01) rotate(1deg);
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(0.98) rotate(-1.2deg);
+  }
+
+  75% {
+    transform: translate(-50%, -50%) scale(1.02) rotate(0.8deg);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
 }
 
 .sprite {
   position: relative;
   max-height: 500px;
   z-index: 1;
-  filter: brightness(0) contrast(1000) drop-shadow(0 0 10px rgba(0, 0, 0, 0.4));
+  filter: brightness(0) contrast(1000) drop-shadow(-5px 5px 5px rgba(0, 0, 0, 0.6));
 }
 
 .revealed {
@@ -57,16 +107,27 @@
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+  z-index: 1;
 }
 
 input {
   padding: 0.5rem 1rem;
-  font-size: 1.2rem;
+  font-size: 4rem;
   border-radius: 8px;
   border: none;
   width: 100%;
-  max-width: 250px;
+  max-width: 20rem;
   text-align: center;
+  background: transparent;
+  color: #ffcc00;
+  /* bright yellow */
+  text-shadow:
+    -2px -2px 0 #2a75bb,
+    2px -2px 0 #2a75bb,
+    -2px 2px 0 #2a75bb,
+    2px 2px 0 #2a75bb;
+  /* blue outline */
+  border-bottom: 2px solid black;
 }
 
 button {
@@ -83,4 +144,39 @@ button {
 button:disabled {
   opacity: 0.5;
   cursor: default;
+}
+
+p {
+  font-family: 'VT323', monospace;
+  animation:
+    typing 3.5s steps(40, end),
+    blink-caret .75s step-end infinite;
+  font-size: 32px;
+  overflow: hidden;
+  white-space: nowrap;
+  margin: 0 auto;
+  display: inline-block;
+}
+
+@keyframes typing {
+  from {
+    width: 0
+  }
+
+  to {
+    width: 100%
+  }
+}
+
+/* The typewriter cursor effect */
+@keyframes blink-caret {
+
+  from,
+  to {
+    border-color: transparent
+  }
+
+  50% {
+    border-color: orange;
+  }
 }
