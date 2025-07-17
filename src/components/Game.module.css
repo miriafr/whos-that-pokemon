@@ -3,38 +3,95 @@
 }
 
 .gameContainer {
-  background: url('/assets/background.png') center/cover no-repeat;
+  background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('/assets/background.png') center center / cover no-repeat;
+  ;
   height: 100vh;
   width: 100vw;
+  top: 0;
+  left: 0;
+  position: fixed;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  padding: 2rem;
   box-sizing: border-box;
-  animation: bgPulse 1s infinite steps(1, end);
 }
 
-@keyframes bgPulse {
-  0% {
-    background-position: 0 0;
-  }
+.bezelWrapper {
+  background-image: url('/assets/bezel.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  aspect-ratio: 16 / 9;
+  max-width: 1000px;
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  25% {
-    background-position: 1px 1px;
+.bezelWrapper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/assets/bezel.png') center/contain no-repeat;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.crtBox {
+  position: relative;
+  width: 88%;
+  height: 90%;
+  background: transparent;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: inset 0 0 40px rgba(0, 170, 255, 0.3);
+  animation: flicker 0.7s infinite;
+  overflow: hidden;
+  position: relative;
+}
+
+@keyframes flicker {
+
+  0%,
+  100% {
+    opacity: 1;
   }
 
   50% {
-    background-position: 0.5px 1.5px;
+    opacity: 0.95;
   }
+}
 
-  75% {
-    background-position: 1px 0.5px;
-  }
+.crtBox::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: repeating-linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.03) 0,
+      rgba(255, 255, 255, 0.03) 1px,
+      transparent 1px,
+      transparent 2px);
+  z-index: 10;
+  pointer-events: none;
+}
 
-  100% {
-    background-position: 0 0;
-  }
+.crtBox::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center,
+      transparent 60%,
+      rgba(0, 0, 0, 0.3) 100%);
+  z-index: 11;
+  pointer-events: none;
 }
 
 .battleZone {
@@ -58,7 +115,8 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 220%;
+  width: 200%;
+  max-width: 1000px;
   transform: translate(-50%, -50%);
   pointer-events: none;
   z-index: 0;
@@ -91,6 +149,8 @@
 .sprite {
   position: relative;
   max-height: 500px;
+  max-width: 80%;
+  height: auto;
   z-index: 1;
   filter: brightness(0) contrast(1000) drop-shadow(-5px 5px 5px rgba(0, 0, 0, 0.6));
 }
@@ -106,17 +166,17 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
   z-index: 1;
 }
 
 input {
-  padding: 0.5rem 1rem;
-  font-size: 4rem;
+  padding: 0.6rem 1.2rem;
+  font-size: clamp(1.5rem, 4vw, 3rem);
   border-radius: 8px;
   border: none;
   width: 100%;
-  max-width: 20rem;
+  max-width: 80%;
   text-align: center;
   background: transparent;
   color: #ffcc00;
@@ -127,11 +187,26 @@ input {
     -2px 2px 0 #2a75bb,
     2px 2px 0 #2a75bb;
   /* blue outline */
-  border-bottom: 2px solid black;
+  border-bottom: 2px solid #2a75bb;
+}
+
+input::placeholder {
+  text-shadow: none;
+  font-size: clamp(1rem, 3vw, 2rem);
+  text-shadow:
+    -1px -1px 0 #5e9dd7,
+    1px -1px 0 #5e9dd7,
+    -1px 1px 0 #5e9dd7,
+    1px 1px 0 #5e9dd7;
+  color: #ffea96;
+}
+
+input:focus {
+  outline: none;
 }
 
 button {
-  padding: 0.5rem 1.2rem;
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
   font-size: 1.2rem;
   border-radius: 8px;
   border: none;
@@ -139,6 +214,11 @@ button {
   color: #2a75bb;
   font-weight: bold;
   cursor: pointer;
+  padding: 0.5rem 1rem;
+  margin-top: 1rem;
+  box-shadow:
+    -4px 4px 0 #2a75bb,
+    -6px 6px 0 rgba(0, 0, 0, 0.25);
 }
 
 button:disabled {
@@ -146,16 +226,32 @@ button:disabled {
   cursor: default;
 }
 
-p {
+.feedback {
   font-family: 'VT323', monospace;
-  animation:
-    typing 3.5s steps(40, end),
-    blink-caret .75s step-end infinite;
-  font-size: 32px;
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  text-align: center;
+  min-height: 40px;
+  max-width: 80%;
+  width: 100%;
   overflow: hidden;
   white-space: nowrap;
   margin: 0 auto;
+  text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
+  color: #fff
+}
+
+.feedback p {
   display: inline-block;
+  animation:
+    typing 1.5s steps(40, end),
+    blink-caret 0.75s step-end infinite;
+  overflow: hidden;
+  white-space: nowrap;
+  margin: 0 auto;
 }
 
 @keyframes typing {
