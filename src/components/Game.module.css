@@ -1,0 +1,86 @@
+.gameContainer {
+  background: url('/assets/background.png') center/cover no-repeat;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Arial', sans-serif;
+  overflow: hidden;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.battleZone {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Left side: burst + sprite */
+.leftSide {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.burst {
+  position: absolute;
+  top: 50%;
+  left: 40%;
+  width: 220%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.sprite {
+  position: relative;
+  max-height: 500px;
+  z-index: 1;
+  filter: brightness(0) contrast(1000) drop-shadow(0 0 10px rgba(0, 0, 0, 0.4));
+}
+
+.revealed {
+  transition: filter 0.5s ease;
+  filter: none;
+}
+
+/* Right side: input + buttons */
+.rightSide {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+input {
+  padding: 0.5rem 1rem;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  border: none;
+  width: 100%;
+  max-width: 250px;
+  text-align: center;
+}
+
+button {
+  padding: 0.5rem 1.2rem;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  border: none;
+  background: #ffcb05;
+  color: #2a75bb;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
