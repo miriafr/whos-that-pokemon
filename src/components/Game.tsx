@@ -25,7 +25,6 @@ export default function Game() {
     const playFeedback = (isCorrect: boolean) => {
         if (!soundOn) return;
         const audio = isCorrect ? correctSound.current : wrongSound.current;
-
         try {
             audio.pause();
             audio.currentTime = 0;
@@ -39,7 +38,7 @@ export default function Game() {
         let attempts = 0;
         while (attempts < 15) {
             const id = Math.floor(Math.random() * 898) + 1;
-            const res = await fetch(`https://pokeapi.co/api/v2/pokemon/35`);
+            const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
             const data = await res.json();
 
             const sprite = data.sprites.other['official-artwork'].front_default;
@@ -73,7 +72,7 @@ export default function Game() {
         setSoundOn(prev => {
             const next = !prev;
             if (!prev) {
-                // Just turned ON
+                // Just turned on
                 whosThatSound.current.play().catch(() => {
                     console.warn("Failed to play sound");
                 });
