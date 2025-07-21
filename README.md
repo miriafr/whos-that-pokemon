@@ -1,7 +1,7 @@
 # 🎮 Who's That Pokémon?
 
 A nostalgic, nonsense little guessing game inspired by the original "Who's That Pokémon?" segment from the anime.  
-This is a purely fan-made project — please don't sue me.
+This is a purely fan-made project, please don't sue me.
 
 ## 🛠️ Built with
 - React + TypeScript
