@@ -172,7 +172,8 @@
   max-width: 80%;
   height: auto;
   z-index: 1;
-  filter: brightness(0) contrast(1000) drop-shadow(-5px 5px 5px rgba(0, 0, 0, 0.6));
+  filter: brightness(0) saturate(100%) contrast(1000) drop-shadow(-5px 5px 5px rgba(0, 0, 0, 0.6));
+
 }
 
 .revealed {
@@ -243,6 +244,23 @@ button {
   ;
 }
 
+.soundToggle {
+  position: absolute;
+  top: 0px;
+  right: 20px;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  color: #ffcb05;
+  cursor: pointer;
+  z-index: 2;
+  box-shadow: none;
+}
+
+.soundToggle:hover {
+  transform: scale(1.1);
+}
+
 button:disabled {
   opacity: 0.5;
   cursor: default;
@@ -297,4 +315,38 @@ button:disabled {
   50% {
     border-color: orange;
   }
+}
+
+.loaderWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader {
+  width: 160px;
+  height: 160px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+  z-index: 1;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.loadingText {
+  font-family: 'VT323', monospace; /* or your pixel font */
+  font-size: 1.2rem;
+  color: white;
+  margin-top: 8px;
+  letter-spacing: 1px;
+  animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
 }

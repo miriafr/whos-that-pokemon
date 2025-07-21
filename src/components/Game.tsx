@@ -12,8 +12,41 @@ export default function Game() {
     const [guess, setGuess] = useState('');
     const [isRevealed, setIsRevealed] = useState(false);
     const [feedback, setFeedback] = useState('');
+    const [soundOn, setSoundOn] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const nextButtonRef = useRef<HTMLButtonElement>(null);
+    const whosThatSound = useRef(new Audio("/sounds/whos-that.mp3"));
+    const correctSounds = useRef([
+        new Audio("/sounds/correct.mp3"),
+        new Audio("/sounds/correct.mp3"),
+        new Audio("/sounds/correct.mp3")
+    ]);
+
+    const wrongSounds = useRef([
+        new Audio("/sounds/wrong.mp3"),
+        new Audio("/sounds/wrong.mp3"),
+        new Audio("/sounds/wrong.mp3")
+    ]);
+
+    let currentCorrectIndex = 0;
+    let currentWrongIndex = 0;
+
+    const playFeedback = (isCorrect: boolean) => {
+        if (!soundOn) return;
+
+        const pool = isCorrect ? correctSounds.current : wrongSounds.current;
+        const index = isCorrect ? currentCorrectIndex : currentWrongIndex;
+
+        const sound = pool[index];
+        sound.currentTime = 0;
+        sound.play().catch(() => console.warn(`${isCorrect ? "Correct" : "Wrong"} sound failed`));
+
+        if (isCorrect) {
+            currentCorrectIndex = (index + 1) % pool.length;
+        } else {
+            currentWrongIndex = (index + 1) % pool.length;
+        }
+    };
 
     // Fetch a random Pokémon
     const fetchRandomPokemon = async (): Promise<void> => {
@@ -49,6 +82,19 @@ export default function Game() {
         fetchRandomPokemon();
     }, []);
 
+    const toggleSound = () => {
+        setSoundOn(prev => {
+            const next = !prev;
+            if (!prev) {
+                // Just turned ON
+                whosThatSound.current.play().catch(() => {
+                    console.warn("Failed to play sound");
+                });
+            }
+            return next;
+        });
+    };
+
     const handleSubmit = () => {
         if (!pokemon) return;
         const userGuess = normalizeText(guess.trim().toLowerCase());
@@ -60,8 +106,10 @@ export default function Game() {
 
         if (correct) {
             setFeedback('Correct! 🎉');
+            playFeedback(true);
         } else {
             setFeedback(`Oops! It was ${capitalizedName}`);
+            playFeedback(false);
         }
         setIsRevealed(true);
         setTimeout(() => nextButtonRef.current?.focus(), 0);
@@ -78,22 +126,33 @@ export default function Game() {
         }
     };
 
-    if (!pokemon) return <p>Loading Pokémon...</p>;
-
     return (
         <div className={styles.gameContainer}>
-            <h1 className={styles.title}>Who's That Pokémon?</h1>
+            <h1 className={styles.title}>Who's That PokéMon?</h1>
             <div className={styles.bezelWrapper}>
-
                 <div className={styles.crtBox}>
+                    <button onClick={toggleSound} className={styles.soundToggle} aria-label="Toggle sound">
+                        <i className={`fa-solid ${soundOn ? "fa-volume-high" : "fa-volume-off"}`}></i>
+                    </button>
                     <div className={styles.battleZone}>
                         <div className={styles.leftSide}>
                             <img src="/assets/burst.png" className={styles.burst} alt="burst" />
-                            <img
-                                src={pokemon.sprite}
-                                alt="Who's that Pokémon?"
-                                className={`${styles.sprite} ${isRevealed ? styles.revealed : ''}`}
-                            />
+                            {!pokemon ? (
+                                <div className={styles.loaderWrapper}>
+                                    <img
+                                        src="/assets/pokeball.png"
+                                        alt="Loading Poké Ball"
+                                        className={`${styles.loader} animate__animated animate__zoomIn`}
+                                    />
+                                    <p className={styles.loadingText}>Loading…</p>
+                                </div>
+                            ) : (
+                                <img
+                                    src={pokemon.sprite}
+                                    alt="Who's that Pokémon?"
+                                    className={`${styles.sprite} ${isRevealed ? styles.revealed : ''}`}
+                                />
+                            )}
                         </div>
                         <div className={styles.rightSide}>
                             <input
