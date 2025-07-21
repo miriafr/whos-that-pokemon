@@ -76,6 +76,9 @@ export default function Game() {
                 whosThatSound.current.play().catch(() => {
                     console.warn("Failed to play sound");
                 });
+            } else{
+                whosThatSound.current.pause();
+                whosThatSound.current.currentTime = 0;
             }
             return next;
         });
