@@ -163,17 +163,19 @@ export default function Game() {
                             )}
                         </div>
                         <div className={styles.rightSide}>
-                            <input
-                                ref={inputRef}
-                                value={guess}
-                                onChange={(e) => setGuess(e.target.value)}
-                                onKeyDown={handleKeyDown}
-                                placeholder="?"
-                                disabled={isRevealed}
-                            />
-                            <button onClick={isRevealed ? fetchRandomPokemon : handleSubmit} ref={nextButtonRef}>
-                                {isRevealed ? 'Next Pokémon' : 'Submit'}
-                            </button>
+                            <div className={styles.inputGroup}>
+                                <input
+                                    ref={inputRef}
+                                    value={guess}
+                                    onChange={(e) => setGuess(e.target.value)}
+                                    onKeyDown={handleKeyDown}
+                                    placeholder="?"
+                                    disabled={isRevealed}
+                                />
+                                <button onClick={isRevealed ? fetchRandomPokemon : handleSubmit} ref={nextButtonRef}>
+                                    {isRevealed ? 'Next Pokémon' : 'Submit'}
+                                </button>
+                            </div>
                             <div className={styles.feedback}>
                                 {feedback && <p>{feedback}</p>}
                             </div>
