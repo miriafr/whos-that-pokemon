@@ -13,55 +13,42 @@ export default function Game() {
     const [isRevealed, setIsRevealed] = useState(false);
     const [feedback, setFeedback] = useState('');
     const [soundOn, setSoundOn] = useState(false);
+    const [score, setScore] = useState(0);
+    const [totalGuesses, setTotalGuesses] = useState(0);
     const inputRef = useRef<HTMLInputElement>(null);
     const nextButtonRef = useRef<HTMLButtonElement>(null);
     const whosThatSound = useRef(new Audio("/sounds/whos-that.mp3"));
-    const correctSounds = useRef([
-        new Audio("/sounds/correct.mp3"),
-        new Audio("/sounds/correct.mp3"),
-        new Audio("/sounds/correct.mp3")
-    ]);
-
-    const wrongSounds = useRef([
-        new Audio("/sounds/wrong.mp3"),
-        new Audio("/sounds/wrong.mp3"),
-        new Audio("/sounds/wrong.mp3")
-    ]);
-
-    let currentCorrectIndex = 0;
-    let currentWrongIndex = 0;
+    const correctSound = useRef(new Audio("/sounds/correct.mp3"));
+    const wrongSound = useRef(new Audio("/sounds/wrong.mp3"));
+    const clefairyVineSound = useRef(new Audio("/sounds/clefairy-vine.mp3"));
 
     const playFeedback = (isCorrect: boolean) => {
         if (!soundOn) return;
+        const audio = isCorrect ? correctSound.current : wrongSound.current;
 
-        const pool = isCorrect ? correctSounds.current : wrongSounds.current;
-        const index = isCorrect ? currentCorrectIndex : currentWrongIndex;
-
-        const sound = pool[index];
-        sound.currentTime = 0;
-        sound.play().catch(() => console.warn(`${isCorrect ? "Correct" : "Wrong"} sound failed`));
-
-        if (isCorrect) {
-            currentCorrectIndex = (index + 1) % pool.length;
-        } else {
-            currentWrongIndex = (index + 1) % pool.length;
+        try {
+            audio.pause();
+            audio.currentTime = 0;
+            audio.play().catch(() => { });
+        } catch (err) {
+            console.warn("Sound error:", err);
         }
     };
-
     // Fetch a random Pokémon
     const fetchRandomPokemon = async (): Promise<void> => {
         let attempts = 0;
         while (attempts < 15) {
             const id = Math.floor(Math.random() * 898) + 1;
-            const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+            const res = await fetch(`https://pokeapi.co/api/v2/pokemon/35`);
             const data = await res.json();
 
             const sprite = data.sprites.other['official-artwork'].front_default;
-            const rawName = data.name;
-            const cleanName = rawName.split('-')[0];
+            const speciesRes = await fetch(data.species.url);
+            const speciesData = await speciesRes.json();
+            const baseName = speciesData.name;
             if (sprite) {
                 setPokemon({
-                    name: cleanName,
+                    name: baseName,
                     sprite: sprite,
                 });
                 setIsRevealed(false);
@@ -95,23 +82,42 @@ export default function Game() {
         });
     };
 
+    const checkClefairyVine = (name: string, guess: string) => {
+        const isClefairy = name === "clefairy";
+        const isPikachuGuess = guess === "pikachu";
+
+        if (isClefairy && isPikachuGuess) {
+            clefairyVineSound.current.currentTime = 0;
+            clefairyVineSound.current.play().catch(() => console.warn("Vine sound failed"));
+            setFeedback("Fuuuuuuuuuck")
+            setIsRevealed(true);
+            return true;
+        }
+        return false;
+    }
+
     const handleSubmit = () => {
         if (!pokemon) return;
         const userGuess = normalizeText(guess.trim().toLowerCase());
         const targetName = normalizeText(pokemon.name.toLowerCase());
-
+        if (checkClefairyVine(pokemon.name, userGuess)) {
+            return;
+        }
         const distance = levenshtein(userGuess, targetName);
         const correct = distance <= 2;
         const capitalizedName = pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
 
         if (correct) {
-            setFeedback('Correct! 🎉');
+            setFeedback('Correct!');
             playFeedback(true);
+            setScore(prev => prev + 1);
+
         } else {
             setFeedback(`Oops! It was ${capitalizedName}`);
             playFeedback(false);
         }
         setIsRevealed(true);
+        setTotalGuesses(prev => prev + 1);
         setTimeout(() => nextButtonRef.current?.focus(), 0);
     };
 
@@ -134,6 +140,9 @@ export default function Game() {
                     <button onClick={toggleSound} className={styles.soundToggle} aria-label="Toggle sound">
                         <i className={`fa-solid ${soundOn ? "fa-volume-high" : "fa-volume-off"}`}></i>
                     </button>
+                    <div className={styles.scoreDisplay}>
+                        Score: {score}/{totalGuesses}
+                    </div>
                     <div className={styles.battleZone}>
                         <div className={styles.leftSide}>
                             <img src="/assets/burst.png" className={styles.burst} alt="burst" />

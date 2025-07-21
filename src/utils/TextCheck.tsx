@@ -1,6 +1,6 @@
-export const normalizeText = (text: string): string =>
-  text.normalize("NFD").replace(/[\u0300-\u036f]/g, '');
-
+export const normalizeText = (text: string): string => {
+  return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, '').replace(/[\s\-]/g, '');
+};
 export const levenshtein = (a: string, b: string): number => {
   const matrix = Array.from({ length: a.length + 1 }, (_, i) =>
     Array.from({ length: b.length + 1 }, (_, j) =>
